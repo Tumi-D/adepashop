@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\User;
 use App\Models\UserWarehouse;
 use App\Models\Brand;
@@ -71,7 +72,7 @@ class PosController extends BaseController
                 $orderDetails[] = [
                     'date' => Carbon::now(),
                     'sale_id' => $order->id,
-                    'sale_unit_id' =>  $value['sale_unit_id'],
+                    'sale_unit_id' => $value['sale_unit_id'],
                     'quantity' => $value['quantity'],
                     'product_id' => $value['product_id'],
                     'product_variant_id' => $value['product_variant_id'],
@@ -88,7 +89,6 @@ class PosController extends BaseController
                     $product_warehouse = product_warehouse::where('warehouse_id', $order->warehouse_id)
                         ->where('product_id', $value['product_id'])->where('product_variant_id', $value['product_variant_id'])
                         ->first();
-
                     if ($unit && $product_warehouse) {
                         if ($unit->operator == '/') {
                             $product_warehouse->qte -= $value['quantity'] / $unit->operator_value;
@@ -134,8 +134,8 @@ class PosController extends BaseController
                 } else if ($due == $sale->GrandTotal) {
                     $payment_statut = 'unpaid';
                 }
-                              
-                if($request['amount'] > 0){
+
+                if ($request['amount'] > 0) {
                     if ($request->payment['Reglement'] == 'credit card') {
                         $Client = Client::whereId($request->client_id)->first();
                         Stripe\Stripe::setApiKey(config('app.STRIPE_SECRET'));
@@ -190,7 +190,7 @@ class PosController extends BaseController
                         // Paying Method Cash
                     } else {
 
-                        PaymentSale::create([
+                      $payment =   PaymentSale::create([
                             'sale_id' => $order->id,
                             'Ref' => app('App\Http\Controllers\PaymentSalesController')->getNumberOrder(),
                             'date' => Carbon::now(),
@@ -201,6 +201,18 @@ class PosController extends BaseController
                             'user_id' => Auth::user()->id,
                         ]);
 
+                        $sender_names = [1 => 'AdepaPOS', 2 => 'AdepaPOS', 3 => 'AdepaPOS', 4 => 'Madepa', 5 => 'MadepaLux', 6 => 'CompleteFit', 7 => 'AdepaPOS', 8 => 'Oheneba', 9 => 'AdepaPOS'];
+                        $sender_name =  $sender_names[$order->warehouse_id];
+                        if ($payment_statut == 'paid') {
+                            if ($request->client_id != 1) {
+                                $helper = new helpers();
+                                $client = Client::find($request->client_id);
+                                $warehouse = Warehouse::find($request->warehouse_id);
+                                $orderRef =  $payment->Ref;
+                                $message ="Thank you for your purchase at $warehouse->name! Your order #$orderRef for [Item(s) Purchased] is confirmed. Total: GHS$payment->montant with Change:GHS$payment->change. For queries, contact$warehouse->mobile";
+                                $helper->sendSMS($sender_name, $client->phone, $message);
+                            }
+                        }
                         $sale->update([
                             'paid_amount' => $total_paid,
                             'payment_statut' => $payment_statut,
@@ -208,7 +220,7 @@ class PosController extends BaseController
                     }
 
                 }
-              
+
             } catch (Exception $e) {
                 return response()->json(['message' => $e->getMessage()], 500);
             }
@@ -240,14 +252,14 @@ class PosController extends BaseController
                 return $query->whereHas('product', function ($q) use ($request) {
                     $q->where('not_selling', '=', 0);
                 })
-                ->where(function ($query) use ($request) {
-                    if ($request->stock == '1') {
-                        return $query->where('qte', '>', 0);
-                    }
-                });
+                    ->where(function ($query) use ($request) {
+                        if ($request->stock == '1') {
+                            return $query->where('qte', '>', 0);
+                        }
+                    });
             })
 
-        // Filter
+            // Filter
             ->where(function ($query) use ($request) {
                 return $query->when($request->filled('category_id'), function ($query) use ($request) {
                     return $query->whereHas('product', function ($q) use ($request) {
@@ -337,12 +349,12 @@ class PosController extends BaseController
         $clients = Client::where('deleted_at', '=', null)->get(['id', 'name']);
         $settings = Setting::where('deleted_at', '=', null)->first();
 
-          //get warehouses assigned to user
-          $user_auth = auth()->user();
-          if($user_auth->is_all_warehouses){
-             $warehouses = Warehouse::where('deleted_at', '=', null)->get(['id', 'name']);
+        //get warehouses assigned to user
+        $user_auth = auth()->user();
+        if ($user_auth->is_all_warehouses) {
+            $warehouses = Warehouse::where('deleted_at', '=', null)->get(['id', 'name']);
 
-             if ($settings->warehouse_id) {
+            if ($settings->warehouse_id) {
                 if (Warehouse::where('id', $settings->warehouse_id)->where('deleted_at', '=', null)->first()) {
                     $defaultWarehouse = $settings->warehouse_id;
                 } else {
@@ -352,11 +364,11 @@ class PosController extends BaseController
                 $defaultWarehouse = '';
             }
 
-          }else{
-             $warehouses_id = UserWarehouse::where('user_id', $user_auth->id)->pluck('warehouse_id')->toArray();
-             $warehouses = Warehouse::where('deleted_at', '=', null)->whereIn('id', $warehouses_id)->get(['id', 'name']);
+        } else {
+            $warehouses_id = UserWarehouse::where('user_id', $user_auth->id)->pluck('warehouse_id')->toArray();
+            $warehouses = Warehouse::where('deleted_at', '=', null)->whereIn('id', $warehouses_id)->get(['id', 'name']);
 
-             if ($settings->warehouse_id) {
+            if ($settings->warehouse_id) {
                 if (Warehouse::where('id', $settings->warehouse_id)->whereIn('id', $warehouses_id)->where('deleted_at', '=', null)->first()) {
                     $defaultWarehouse = $settings->warehouse_id;
                 } else {
@@ -365,11 +377,11 @@ class PosController extends BaseController
             } else {
                 $defaultWarehouse = '';
             }
-          }
+        }
 
 
-      
-        
+
+
 
         if ($settings->client_id) {
             if (Client::where('id', $settings->client_id)->where('deleted_at', '=', null)->first()) {

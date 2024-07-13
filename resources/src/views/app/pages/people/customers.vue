@@ -14,9 +14,9 @@
         @on-search="onSearch"
         :search-options="{
         enabled: true,
-        placeholder: $t('Search_this_table'),  
+        placeholder: $t('Search_this_table'),
       }"
-        :select-options="{ 
+        :select-options="{
           enabled: true ,
           clearSelectionText: '',
         }"
@@ -103,7 +103,7 @@
                   <i class="nav-icon i-Dollar font-weight-bold mr-2"></i>
                   {{$t('pay_all_sell_return_due_at_a_time')}}
                 </b-dropdown-item>
-               
+
                 <b-dropdown-item
                   @click="showDetails(props.row)"
                 >
@@ -193,7 +193,7 @@
       >
         <b-form @submit.prevent="Submit_Payment_sell_due">
           <b-row>
-          
+
             <!-- Paying Amount  -->
             <b-col lg="6" md="12" sm="12">
               <validation-provider
@@ -231,10 +231,11 @@
                           [
                           {label: 'Cash', value: 'Cash'},
                           {label: 'credit card', value: 'credit card'},
-                          {label: 'TPE', value: 'tpe'},
-                          {label: 'cheque', value: 'cheque'},
-                          {label: 'Western Union', value: 'Western Union'},
+                        // {label: 'TPE', value: 'tpe'},
+                        // {label: 'cheque', value: 'cheque'},
+                        //  {label: 'Western Union', value: 'Western Union'},
                           {label: 'bank transfer', value: 'bank transfer'},
+                          {label: 'Mobile Money', value: 'mobile_money'},
                           {label: 'other', value: 'other'},
                           ]"
                   ></v-select>
@@ -276,7 +277,7 @@
       >
         <b-form @submit.prevent="Submit_Payment_sell_return_due">
           <b-row>
-          
+
             <!-- Paying Amount -->
             <b-col lg="6" md="12" sm="12">
               <validation-provider
@@ -471,7 +472,7 @@
                 </b-form-group>
               </validation-provider>
             </b-col>
-            
+
              <!-- Customer Email -->
             <b-col md="6" sm="12">
                 <b-form-group :label="$t('Email')">
@@ -659,7 +660,7 @@
 
                 <tr>
                   <td>{{$t('Phone')}}</td>
-                 
+
                 </tr>
 
                 <tr>
@@ -1112,7 +1113,7 @@ export default {
           this.SubmitProcessing = false;
         })
         .catch(error => {
-          
+
           this.makeToast("danger", this.$t("InvalidData"), this.$t("Failed"));
           this.SubmitProcessing = false;
         });
@@ -1141,7 +1142,7 @@ export default {
           this.SubmitProcessing = false;
         })
         .catch(error => {
-         
+
           this.makeToast("danger", this.$t("InvalidData"), this.$t("Failed"));
           this.SubmitProcessing = false;
         });
@@ -1275,7 +1276,7 @@ export default {
           this.$t("Warning")
         );
         this.payment.amount = 0;
-      } 
+      }
     },
 
       //-------------------------------- reset_Form_payment-------------------------------\\
@@ -1301,7 +1302,7 @@ export default {
       setTimeout(() => {
         this.$bvModal.show("modal_Pay_due");
       }, 500);
-      
+
     },
 
      //------------------------------ Print Customer_Invoice -------------------------\\
@@ -1384,7 +1385,7 @@ export default {
           this.$t("Warning")
         );
         this.payment_return.amount = 0;
-      } 
+      }
     },
 
       //-------------------------------- reset_Form_payment-------------------------------\\
@@ -1410,7 +1411,7 @@ export default {
       setTimeout(() => {
         this.$bvModal.show("modal_Pay_return_due");
       }, 500);
-      
+
     },
 
      //------------------------------ Print Customer_Invoice -------------------------\\
