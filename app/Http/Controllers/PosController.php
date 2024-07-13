@@ -191,7 +191,8 @@ class PosController extends BaseController
                         // Paying Method Cash
                     } else {
 
-                      $payment =   PaymentSale::create([
+                        // Create the payment sale record
+                        $payment = PaymentSale::create([
                             'sale_id' => $order->id,
                             'Ref' => app('App\Http\Controllers\PaymentSalesController')->getNumberOrder(),
                             'date' => Carbon::now(),
@@ -202,20 +203,31 @@ class PosController extends BaseController
                             'user_id' => Auth::user()->id,
                         ]);
 
-                        $sender_names = [1 => 'AdepaPOS', 2 => 'AdepaPOS', 3 => 'AdepaPOS', 4 => 'Madepa', 5 => 'MadepaLux', 6 => 'CompleteFit', 7 => 'AdepaPOS', 8 => 'Oheneba', 9 => 'AdepaPOS'];
-                        $sender_name =  $sender_names[$request->warehouse_id];
-                        \Log::info("Sender Name: $sender_name");
-                        // if ($payment_statut == 'paid') {
-                            if ($request->client_id != 1) {
-                                $helper = new helpers();
-                                $client = Client::find($request->client_id);
-                                $warehouse = Warehouse::find($request->warehouse_id);
-                                $orderRef =  $payment->Ref;
-                                $message ="Thank you for your purchase at $warehouse->name! Your order #$orderRef for [Item(s) Purchased] is confirmed. Total: GHS$payment->montant with Change:GHS$payment->change. For queries, contact$warehouse->mobile";
-                                $helper->sendSMS($sender_name, $client->phone, $message);
-                                \Log::info("Sent  Sms: $message");
-                            }
-                        // }
+                        // Define sender names based on warehouse ID
+                        $sender_names = [
+                            1 => 'AdepaPOS',
+                            2 => 'AdepaPOS',
+                            3 => 'AdepaPOS',
+                            4 => 'Madepa',
+                            5 => 'MadepaLux',
+                            6 => 'CompleteFit',
+                            7 => 'AdepaPOS',
+                            8 => 'Oheneba',
+                            9 => 'AdepaPOS'
+                        ];
+
+                $sender_name = $sender_names[$request->warehouse_id] ?? 'AdepaPOS';
+                \Log::info("Sender Name: $sender_name");
+
+            if ($request->client_id != 1) {
+                $helper = new helpers();
+                $client = Client::find($request->client_id);
+                $warehouse = Warehouse::find($request->warehouse_id);
+                $orderRef = $payment->Ref;
+                $message = "Thank you for your purchase at {$warehouse->name}! Your order #{$orderRef} for [Item(s) Purchased] is confirmed. Total: GHS{$payment->montant} with Change: GHS{$payment->change}. For queries, contact {$warehouse->mobile}";
+                $helper->sendSMS($sender_name, $client->phone, $message);
+                \Log::info("Sent SMS: $message");
+            }
                         $sale->update([
                             'paid_amount' => $total_paid,
                             'payment_statut' => $payment_statut,
