@@ -227,7 +227,7 @@ class PosController extends BaseController
                             $orderRef = $payment->Ref;
                             $message = "Thank you for your purchase at {$warehouse->name}! Your order #{$orderRef} for [Item(s) Purchased] is confirmed. Total: GHS{$payment->montant} with Change: GHS{$payment->change}. For queries, contact $warehouse->mobile";
                             $helper->sendSMS($sender_name, $client->phone, $message);
-                            \Log::info("Sent SMS: $message");
+                            // \Log::info("Sent SMS: $message");
                         }
                         $sale->update([
                             'paid_amount' => $total_paid,
