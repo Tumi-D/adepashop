@@ -207,15 +207,15 @@ class PosController extends BaseController
                         $sender_names = [
                             // 1 => 'AdepaPOS',
                             // 2 => 'AdepaPOS',
-                            // 3 => 'AdepaPOS',
+                            3 => 'Odeneho',
                             4 => 'Madepa',
                             5 => 'MadepaLux',
                             6 => 'CompleteFit',
-                            // 7 => 'AdepaPOS',
+                            7 => 'PremiumFit',
                             8 => 'Oheneba',
-                            // 9 => 'AdepaPOS'
+                            9 => 'AbsoluteFit'
                         ];
-                        $approved = [4,5,6,8];
+                        $approved = [3,4,5,6,7,8,9];
 
                         // \Log::info("Sender Name: $sender_name");
 
