@@ -16,7 +16,7 @@
         placeholder: $t('Search_this_table'),
         enabled: true,
       }"
-        :select-options="{ 
+        :select-options="{
           enabled: true ,
           clearSelectionText: '',
         }"
@@ -86,7 +86,7 @@
                   </b-dropdown-item>
                 </b-navbar-nav>
 
-                 <b-dropdown-item 
+                 <b-dropdown-item
                   title="Edit"
                   v-if="currentUserPermissions.includes('Sales_edit') && props.row.sale_has_return == 'no'"
                   :to="'/app/sales/edit/'+props.row.id"
@@ -217,7 +217,7 @@
                 <span class="ul-btn__text ml-1">{{props.row.Ref}}</span>
               </router-link> <br>
               <small v-if="props.row.sale_has_return == 'yes'"><i class="text-15 text-danger i-Back"></i></small>
-              
+
             </div>
         </template>
       </vue-good-table>
@@ -467,13 +467,10 @@
                     :placeholder="$t('PleaseSelect')"
                     :options="
                           [
-                          {label: 'Cash', value: 'Cash'},
-                          {label: 'credit card', value: 'credit card'},
-                          {label: 'TPE', value: 'tpe'},
-                          {label: 'cheque', value: 'cheque'},
-                          {label: 'Western Union', value: 'Western Union'},
-                          {label: 'bank transfer', value: 'bank transfer'},
-                          {label: 'other', value: 'other'},
+                          { label: 'Cash', value: 'Cash' },
+                          { label: 'Mobile Money', value: 'Mobile Money' },
+                          { label: 'bank transfer', value: 'bank transfer' },
+                          { label: 'other', value: 'other' },
                           ]"
                   ></v-select>
                   <b-form-invalid-feedback>{{ errors[0] }}</b-form-invalid-feedback>
@@ -533,7 +530,7 @@
               >{{parseFloat(payment.received_amount - payment.montant).toFixed(2)}}</p>
             </b-col>
 
-           
+
 
             <b-col md="12" v-if="payment.Reglement == 'credit card'">
               <form id="payment-form">
@@ -995,7 +992,7 @@ export default {
       a.document.write(divContents);
       a.document.write("</body></html>");
       a.document.close();
-      
+
       setTimeout(() => {
          a.print();
       }, 1000);
@@ -1053,7 +1050,7 @@ export default {
       this.Get_Sales(this.serverParams.page);
     },
 
-    
+
     onSearch(value) {
       this.search = value.searchTerm;
       this.Get_Sales(this.serverParams.page);
@@ -1071,7 +1068,7 @@ export default {
           this.$t("Warning")
         );
         this.payment.montant = 0;
-      } 
+      }
       else if (this.payment.montant > this.due) {
         this.makeToast(
           "warning",
@@ -1087,7 +1084,7 @@ export default {
     Verified_Received_Amount() {
       if (isNaN(this.payment.received_amount)) {
         this.payment.received_amount = 0;
-      } 
+      }
     },
 
 
@@ -1243,7 +1240,7 @@ export default {
       // Start the progress bar.
       NProgress.start();
       NProgress.set(0.1);
-     
+
       axios
         .get("payment_sale_pdf/" + id, {
           responseType: "blob", // important
@@ -1742,7 +1739,7 @@ export default {
             })
             .catch(error => {
               NProgress.done();
-                
+
             });
     },
 

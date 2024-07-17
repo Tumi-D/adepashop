@@ -16,7 +16,7 @@
         placeholder: $t('Search_this_table'),
         enabled: true,
       }"
-        :select-options="{ 
+        :select-options="{
           enabled: true ,
           clearSelectionText: '',
         }"
@@ -407,13 +407,10 @@
                     :placeholder="$t('PleaseSelect')"
                     :options="
                           [
-                          {label: 'Cash', value: 'Cash'},
-                          {label: 'credit card', value: 'credit card'},
-                           {label: 'TPE', value: 'tpe'},
-                          {label: 'cheque', value: 'cheque'},
-                          {label: 'Western Union', value: 'Western Union'},
-                          {label: 'bank transfer', value: 'bank transfer'},
-                          {label: 'other', value: 'other'},
+                          { label: 'Cash', value: 'Cash' },
+                          { label: 'Mobile Money', value: 'Mobile Money' },
+                          { label: 'bank transfer', value: 'bank transfer' },
+                          { label: 'other', value: 'other' },
                           ]"
                   ></v-select>
                   <b-form-invalid-feedback>{{ errors[0] }}</b-form-invalid-feedback>
@@ -472,7 +469,7 @@
                 class="change_amount"
               >{{parseFloat(facture.received_amount - facture.montant).toFixed(2)}}</p>
             </b-col>
-           
+
             <!-- Note -->
             <b-col lg="12" md="12" sm="12" class="mt-3">
               <b-form-group :label="$t('Note')">
@@ -745,7 +742,7 @@ export default {
           this.$t("Warning")
         );
         this.facture.montant = 0;
-      } 
+      }
       else if (this.facture.montant > this.due) {
         this.makeToast(
           "warning",
@@ -761,7 +758,7 @@ export default {
     Verified_Received_Amount() {
       if (isNaN(this.facture.received_amount)) {
         this.facture.received_amount = 0;
-      } 
+      }
     },
 
 
@@ -816,7 +813,7 @@ export default {
       // Start the progress bar.
       NProgress.start();
       NProgress.set(0.1);
-     
+
        axios
         .get("purchase_pdf/" + id, {
           responseType: "blob", // important
@@ -845,7 +842,7 @@ export default {
       // Start the progress bar.
       NProgress.start();
       NProgress.set(0.1);
-     
+
        axios
         .get("payment_purchase_pdf/" + id, {
           responseType: "blob", // important
@@ -1249,7 +1246,7 @@ export default {
       this.paymentProcessing = true;
       NProgress.start();
       NProgress.set(0.1);
-     
+
         axios
           .put("payment_purchase/" + this.facture.id, {
             purchase_id: this.purchase.id,
@@ -1275,7 +1272,7 @@ export default {
           });
     },
 
-  
+
 
     //------------------------------------ Remove Payment -------------------------------\\
     Remove_Payment(id) {

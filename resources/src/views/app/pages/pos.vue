@@ -963,17 +963,12 @@
                             :reduce="label => label.value"
                             :placeholder="$t('PleaseSelect')"
                             :options="
-                              [
-                              {label: 'Cash', value: 'Cash'},
-                              {label: 'credit card', value: 'credit card'},
-                              {label: 'Mobile Money', value: 'mobile_money'},
-                              {label: 'bank transfer', value: 'bank transfer'},
-                              {label: 'other', value: 'other'},
-                            //  {label: 'TPE', value: 'tpe'},
-                            //   {label: 'cheque', value: 'cheque'},
-                            //   {label: 'Western Union', value: 'Western Union'},
-
-                              ]"
+                                    [
+                                        { label: 'Cash', value: 'Cash' },
+                                        { label: 'Mobile Money', value: 'Mobile Money' },
+                                        { label: 'bank transfer', value: 'bank transfer' },
+                                        { label: 'other', value: 'other' },
+                                    ]"
                           ></v-select>
                           <b-form-invalid-feedback>{{ errors[0] }}</b-form-invalid-feedback>
                         </b-form-group>

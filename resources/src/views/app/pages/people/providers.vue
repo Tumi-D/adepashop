@@ -14,9 +14,9 @@
         @on-search="onSearch"
         :search-options="{
         enabled: true,
-        placeholder: $t('Search_this_table'),  
+        placeholder: $t('Search_this_table'),
       }"
-        :select-options="{ 
+        :select-options="{
           enabled: true ,
           clearSelectionText: '',
         }"
@@ -303,7 +303,7 @@
       >
         <b-form @submit.prevent="Submit_Payment_Purchase_due">
           <b-row>
-          
+
             <!-- Paying Amount  -->
             <b-col lg="6" md="12" sm="12">
               <validation-provider
@@ -339,13 +339,10 @@
                     :placeholder="$t('PleaseSelect')"
                     :options="
                           [
-                          {label: 'Cash', value: 'Cash'},
-                          {label: 'credit card', value: 'credit card'},
-                          {label: 'TPE', value: 'tpe'},
-                          {label: 'cheque', value: 'cheque'},
-                          {label: 'Western Union', value: 'Western Union'},
-                          {label: 'bank transfer', value: 'bank transfer'},
-                          {label: 'other', value: 'other'},
+                          { label: 'Cash', value: 'Cash' },
+                          { label: 'Mobile Money', value: 'Mobile Money' },
+                          { label: 'bank transfer', value: 'bank transfer' },
+                          { label: 'other', value: 'other' },
                           ]"
                   ></v-select>
                   <b-form-invalid-feedback>{{ errors[0] }}</b-form-invalid-feedback>
@@ -386,7 +383,7 @@
       >
         <b-form @submit.prevent="Submit_Payment_purchase_return_due">
           <b-row>
-          
+
             <!-- Paying Amount -->
             <b-col lg="6" md="12" sm="12">
               <validation-provider
@@ -422,13 +419,10 @@
                     :placeholder="$t('PleaseSelect')"
                     :options="
                           [
-                          {label: 'Cash', value: 'Cash'},
-                          {label: 'credit card', value: 'credit card'},
-                          {label: 'TPE', value: 'tpe'},
-                          {label: 'cheque', value: 'cheque'},
-                          {label: 'Western Union', value: 'Western Union'},
-                          {label: 'bank transfer', value: 'bank transfer'},
-                          {label: 'other', value: 'other'},
+                          { label: 'Cash', value: 'Cash' },
+                          { label: 'Mobile Money', value: 'Mobile Money' },
+                          { label: 'bank transfer', value: 'bank transfer' },
+                          { label: 'other', value: 'other' },
                           ]"
                   ></v-select>
                   <b-form-invalid-feedback>{{ errors[0] }}</b-form-invalid-feedback>
@@ -1293,7 +1287,7 @@ export default {
           this.$t("Warning")
         );
         this.payment.amount = 0;
-      } 
+      }
     },
 
       //-------------------------------- reset_Form_payment-------------------------------\\
@@ -1319,7 +1313,7 @@ export default {
       setTimeout(() => {
         this.$bvModal.show("modal_Pay_due");
       }, 500);
-      
+
     },
 
      //------------------------------ Print Customer_Invoice -------------------------\\
@@ -1378,7 +1372,7 @@ export default {
       return `${value[0]}.${formated}`;
     },
 
-    
+
     //-------------------------------Pay Purchase return due -----------------------------------\\
 
      //------ Validate Form Submit_Payment_purchase_return_due
@@ -1418,7 +1412,7 @@ export default {
           this.$t("Warning")
         );
         this.payment_return.amount = 0;
-      } 
+      }
     },
 
       //-------------------------------- reset_Form_payment-------------------------------\\
@@ -1444,7 +1438,7 @@ export default {
       setTimeout(() => {
         this.$bvModal.show("modal_Pay_return_due");
       }, 500);
-      
+
     },
 
      //------------------------------ Print Customer_Invoice -------------------------\\
@@ -1490,7 +1484,7 @@ export default {
     },
 
 
-    
+
   },
 
   //----------------------------- Created function-------------------\\
