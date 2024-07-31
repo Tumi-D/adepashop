@@ -80,6 +80,7 @@
                 <span v-else class="badge badge-outline-warning">{{$t('Unpaid')}}</span>
               </div>
               <div>{{$t('warehouse')}} : {{sale.warehouse}}</div>
+              <div>Date: {{ sale.updated_at }}</div>
               <div>
                 {{$t('Status')}} :
                 <span
@@ -218,7 +219,7 @@ export default {
   },
 
   methods: {
-   
+
 
     //----------------------------------- Invoice Sale PDF  -------------------------\\
     Sale_PDF() {
@@ -226,7 +227,7 @@ export default {
       NProgress.start();
       NProgress.set(0.1);
       let id = this.$route.params.id;
-     
+
        axios
         .get(`sale_pdf/${id}`, {
           responseType: "blob", // important
