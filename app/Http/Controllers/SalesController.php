@@ -775,7 +775,7 @@ class SalesController extends BaseController
 
         $sale_details['Ref'] = $sale_data->Ref;
         $sale_details['date'] = $sale_data->date;
-        $sale_details['updated_at'] = $sale_data->updated_at;
+        $sale_details['updated_at'] = date('F jS, Y h:i:s', strtotime($sale_data->updated_at));
         $sale_details['note'] = $sale_data->notes;
         $sale_details['statut'] = $sale_data->statut;
         $sale_details['warehouse'] = $sale_data['warehouse']->name;
