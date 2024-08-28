@@ -4,19 +4,34 @@
     <div v-if="isLoading" class="loading_page spinner spinner-primary mr-3"></div>
 
     <b-row v-if="!isLoading">
+         <!-- warehouse -->
+      <b-row>
+        <b-col lg="4" md="4" sm="12">
+          <b-form-group :label="$t('Filter_by_warehouse')">
+            <v-select
+              @input="Selected_Warehouse"
+              v-model="warehouse_id"
+              :reduce="label => label.value"
+              :placeholder="$t('Choose_Warehouse')"
+              :options="warehouses.map(warehouses => ({label: warehouses.name, value: warehouses.id}))"
+            />
+          </b-form-group>
+        </b-col>
+      </b-row>
       <b-col md="12" class="text-center">
-        <date-range-picker 
-          v-model="dateRange" 
-          :startDate="startDate" 
-          :endDate="endDate" 
+        <date-range-picker
+          v-model="dateRange"
+          :startDate="startDate"
+          :endDate="endDate"
            @update="Submit_filter_dateRange"
-          :locale-data="locale" > 
+          :locale-data="locale" >
 
           <template v-slot:input="picker" style="min-width: 350px;">
               {{ picker.startDate.toJSON().slice(0, 10)}} - {{ picker.endDate.toJSON().slice(0, 10)}}
-          </template>        
+          </template>
         </date-range-picker>
       </b-col>
+
 
         <b-col md="12" class="mt-4">
           <b-row>
@@ -125,7 +140,7 @@
                       class="bold"
                     >{{currentUser.currency}} {{formatNumber((infos.returns_sales.sum?infos.returns_sales.sum:0),2)}}</span>
                     {{$t('SalesReturn')}})
-              
+
                   </p>
                 </div>
               </div>
@@ -154,7 +169,7 @@
                       class="bold"
                     >{{currentUser.currency}} {{formatNumber((infos.product_cost_fifo?infos.product_cost_fifo:0),2)}}</span>
                     {{$t('Product_Cost')}})
-              
+
                   </p>
                 </div>
               </div>
@@ -183,7 +198,7 @@
                       class="bold"
                     >{{currentUser.currency}} {{formatNumber((infos.total_average_cost?infos.total_average_cost:0),2)}}</span>
                     {{$t('Product_Cost')}})
-              
+
                   </p>
                 </div>
               </div>
@@ -302,22 +317,24 @@ export default {
     return {
       isLoading: true,
       infos: [],
+      warehouse_id:"",
+      warehouses: [],
       today_mode: true,
-      startDate: "", 
-      endDate: "", 
-      dateRange: { 
-       startDate: "", 
-       endDate: "" 
-      }, 
-      locale:{ 
+      startDate: "",
+      endDate: "",
+      dateRange: {
+       startDate: "",
+       endDate: ""
+      },
+      locale:{
           //separator between the two ranges apply
-          Label: "Apply", 
-          cancelLabel: "Cancel", 
-          weekLabel: "W", 
-          customRangeLabel: "Custom Range", 
-          daysOfWeek: moment.weekdaysMin(), 
-          //array of days - see moment documenations for details 
-          monthNames: moment.monthsShort(), //array of month names - see moment documenations for details 
+          Label: "Apply",
+          cancelLabel: "Cancel",
+          weekLabel: "W",
+          customRangeLabel: "Custom Range",
+          daysOfWeek: moment.weekdaysMin(),
+          //array of days - see moment documenations for details
+          monthNames: moment.monthsShort(), //array of month names - see moment documenations for details
           firstDay: 1 //ISO first day of week - see moment documenations for details
         },
     };
@@ -361,7 +378,7 @@ export default {
 
         self.dateRange.startDate = today.getFullYear();
         self.dateRange.endDate = new Date().toJSON().slice(0, 10);
-        
+
       }
     },
 
@@ -377,9 +394,10 @@ export default {
           "report/profit_and_loss?to=" +
             this.endDate +
             "&from=" +
-            this.startDate
+            this.startDate+"&warehouse_id="+this.warehouse_id
         )
         .then(response => {
+          this.warehouses = response.data.warehouses
           this.infos = response.data.data;
           // Complete the animation of theprogress bar.
           NProgress.done();
@@ -387,6 +405,7 @@ export default {
           this.today_mode = false;
         })
         .catch(response => {
+            console.log(response);
           // Complete the animation of theprogress bar.
           NProgress.done();
            setTimeout(() => {
@@ -396,7 +415,7 @@ export default {
         });
     },
 
-  
+
   }, //end Methods
 
   //-----------------------------Autoload function-------------------\\
