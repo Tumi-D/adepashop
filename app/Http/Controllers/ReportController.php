@@ -1651,8 +1651,8 @@ class ReportController extends BaseController
                 DB::raw('SUM(amount) AS sum')
             )->first();
 
-        // Calculate COGS and average cost
-        $cogs_average_data = $this->CalculeCogsAndAverageCost($request);
+        // Calculate COGS and average cost with warehouse filter
+        $cogs_average_data = $this->CalculeCogsAndAverageCost($request, $warehouseId);
         $cogs = $cogs_average_data['total_cogs_products'];
         $total_average_cost = $cogs_average_data['total_average_cost'];
 
@@ -1673,36 +1673,42 @@ class ReportController extends BaseController
     }
 
 
+
     // Calculating the cost of goods sold (COGS)
-    public function CalculeCogsAndAverageCost(request $request)
+    public function CalculeCogsAndAverageCost(Request $request, $warehouseId = null)
     {
+            $total_cogs_products = 0;
+            $total_average_cost = 0;
 
-        // Initialize variable to store total COGS averageCost and for all products
-        $total_cogs_products = 0;
-        $total_average_cost = 0;
+            // Get all distinct product IDs for sales between start and end date
+            $productIds = SaleDetail::whereBetween('date', [$request->from, $request->to])
+                ->when($warehouseId, function($query) use ($warehouseId) {
+                    $query->where('warehouse_id', $warehouseId);
+                })
+                ->select('product_id')->distinct()->get();
 
-        // Get all distinct product IDs for sales between start and end date
-        $productIds = SaleDetail::whereBetween('date', array($request->from, $request->to))->select('product_id')->distinct()->get();
+            // Loop through each product
+            foreach ($productIds as $productId) {
+                $totalCogs = 0;
+                $average_cost = 0;
 
-        // Loop through each product
-        foreach ($productIds as $productId) {
+                // Get the total cost and quantity for all adjustments of the product
+                $adjustments = AdjustmentDetail::join('adjustments', 'adjustments.id', '=', 'adjustment_details.adjustment_id')
+                    ->where('adjustments.date', '<=', $request->to)
+                    ->where('product_id', $productId['product_id'])
+                    ->when($warehouseId, function ($query) use ($warehouseId) {
+                        $query->where('adjustments.warehouse_id', $warehouseId);
+                    })
+                    ->get();
 
-            $totalCogs = 0;
-            $average_cost = 0;
-
-             // Get the total cost and quantity for all adjustments of the product
-             $adjustments = AdjustmentDetail::join('adjustments', 'adjustments.id', '=', 'adjustment_details.adjustment_id')
-             ->where('adjustments.date', '<=' , $request->to)
-             ->where('product_id', $productId['product_id'])->get();
-
-             $adjustment_quantity = 0;
-             foreach ($adjustments as $adjustment) {
-                 if($adjustment->type == 'add'){
-                     $adjustment_quantity += $adjustment->quantity;
-                 }else{
-                     $adjustment_quantity -= $adjustment->quantity;
-                 }
-             }
+                $adjustment_quantity = 0;
+                foreach ($adjustments as $adjustment) {
+                    if($adjustment->type == 'add'){
+                        $adjustment_quantity += $adjustment->quantity;
+                    } else {
+                        $adjustment_quantity -= $adjustment->quantity;
+                    }
+                }
 
             // Get total quantity sold before start date
             $totalQuantitySold = SaleDetail::where('product_id', $productId['product_id'])->where('date', '<', $request->from)->sum('quantity');
@@ -1821,20 +1827,23 @@ class ReportController extends BaseController
 
 
     // Calculate the average cost of a product.
-    public function averageCost($product_id , request $request)
+    public function averageCost($product_id, Request $request, $warehouseId = null)
     {
-        // Get the cost of the product from the products table
         $product = Product::find($product_id);
         $product_cost = $product->cost;
 
         // Get the total cost and quantity for all purchases of the product
         $purchases = PurchaseDetail::with('purchase')
-        ->where(function ($query) use ($request) {
-                return $query->whereHas('purchase', function ($q) use ($request) {
-                    $q->where('date', '<=' , $request->to);
+            ->where(function ($query) use ($request, $warehouseId) {
+                return $query->whereHas('purchase', function ($q) use ($request, $warehouseId) {
+                    $q->where('date', '<=', $request->to);
+                    if ($warehouseId) {
+                        $q->where('warehouse_id', $warehouseId);
+                    }
                 });
-
-        })->where('product_id', $product_id)->get();
+            })
+            ->where('product_id', $product_id)
+            ->get();
 
         $purchase_cost = 0;
         $purchase_quantity = 0;
