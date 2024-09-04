@@ -8,9 +8,13 @@
 
             <b-col md="12" class="text-center" style="margin-bottom: 20px;">
                 <b-form-group :label="$t('Filter_by_warehouse')">
-                    <v-select @input="Selected_Warehouse" v-model="warehouse_id" :reduce="label => label.value"
+                    <!-- <v-select @input="Selected_Warehouse" v-model="warehouse_id" :reduce="label => label.value"
+                        :placeholder="$t('Choose_Warehouse')"
+                        :options="warehouses.map(warehouses => ({ label: warehouses.name, value: warehouses.id }))" /> -->
+                    <v-select @input="handleWarehouseChange" v-model="warehouse_id" :reduce="label => label.value"
                         :placeholder="$t('Choose_Warehouse')"
                         :options="warehouses.map(warehouses => ({ label: warehouses.name, value: warehouses.id }))" />
+
                 </b-form-group>
             </b-col>
             <b-col md="12" class="text-center">
@@ -379,6 +383,13 @@ export default {
           }, 500);
         });
     },
+
+        //----------------------------- Handle Warehouse Change -------------------\\
+ handleWarehouseChange() {
+        // When warehouse selection changes, trigger the ProfitAndLoss method.
+        this.ProfitAndLoss();
+    },
+
 
 
   }, //end Methods
