@@ -1868,9 +1868,7 @@ class ReportController extends BaseController
         // Calculate the average cost
         $total_cost = $purchase_cost + $adjustment_cost;
         $total_quantity = $purchase_quantity + $adjustment_quantity;
-        $average_cost = $total_quantity > 0 ? $total_cost / $total_quantity : 0;
-
-        return $average_cost;
+        return   $total_quantity > 0 ? $total_cost / $total_quantity : 0;
     }
 
 
